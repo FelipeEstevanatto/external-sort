@@ -82,7 +82,7 @@ int main() {
 
     FILE **tempFiles = (FILE **)malloc(tempFileCount * sizeof(FILE *));
     for (int i = 0; i < tempFileCount; i++) {
-        sprintf(tempFileName, "temp%d.txt", i);
+        snprintf(tempFileName, sizeof(tempFileName), "temp%d.txt", i);
         tempFiles[i] = fopen(tempFileName, "r");
     }
 
@@ -139,13 +139,9 @@ void mergeSortedFiles(FILE **tempFiles, int numFiles, FILE *outputFile) {
     free(heap);
     free(indices);
 
-    // Close the file handles before removing the files
+    // Close and remove the temporary files
     for (i = 0; i < numFiles; i++) {
         fclose(tempFiles[i]);
-    }
-
-    // Remove the temporary files
-    for (i = 0; i < numFiles; i++) {
         char tempFileName[20];
         sprintf(tempFileName, "temp%d.txt", i);
         remove(tempFileName);
