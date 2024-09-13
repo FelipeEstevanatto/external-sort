@@ -31,18 +31,6 @@ observados. Para este trabalho, considere M = 5.000.
 
 #define CHUNK_SIZE 5000
 
-/**
- * Number of chunks
- * k = ceil(N / CHUNK_SIZE);
- * 
- * Every integer from the temp file is read and written once to the output
- * Therefore, the total number of reads and writes is 2 * N
- * 
- * Total Read Operations: 2N
- * Total Write Operations: 2N
- * Total I/O Operations: 2N (read) + 2N (write) = 4N
- */
-
 void mergeSortedFiles(FILE **tempFiles, int numFiles, FILE *outputFile);
 void writeSortedChunk(int *buffer, int count, int *tempFileCount);
 int compare(const void *a, const void *b);
@@ -90,6 +78,13 @@ int main() {
     FILE *outputFile = fopen("sorted_output.txt", "w");
     mergeSortedFiles(tempFiles, tempFileCount, outputFile);
 
+    // Close and remove the temporary files
+    for (int i = 0; i < tempFileCount; i++) {
+        fclose(tempFiles[i]);
+        snprintf(tempFileName, sizeof(tempFileName), "temp%d.txt", i);
+        remove(tempFileName);
+    }
+
     free(tempFiles);
     fclose(outputFile);
 
@@ -104,51 +99,30 @@ int main() {
 
 // Step 4: For each pair of sorted files, merge them into a single file until only one file is left
 void mergeSortedFiles(FILE **tempFiles, int numFiles, FILE *outputFile) {
-    int i, *buffer = (int *)malloc(numFiles * sizeof(int));
-    FILE *tempFilesPointers[numFiles];
-    for (i = 0; i < numFiles; i++) {
-        tempFilesPointers[i] = tempFiles[i];
-    }
-
-    // Read the first element from each file
-    for (i = 0; i < numFiles; i++) {
-        if (fscanf(tempFilesPointers[i], "%d", &buffer[i]) == EOF) {
+    int *buffer = malloc(numFiles * sizeof(int));
+    for (int i = 0; i < numFiles; i++) {
+        if (fscanf(tempFiles[i], "%d", &buffer[i]) == EOF) {
             buffer[i] = INT_MAX;
         }
     }
 
     while (1) {
-        int min = buffer[0], minIndex = 0;
-        for (i = 0; i < numFiles; i++) {
+        int min = INT_MAX, minIndex = -1;
+        for (int i = 0; i < numFiles; i++) {
             if (buffer[i] < min) {
                 min = buffer[i];
                 minIndex = i;
             }
         }
+        if (min == INT_MAX) break;
 
-        // If all files are empty, we are done
-        if (min == INT_MAX) {
-            break;
-        }
-
-        // Write the smallest element to the output file
         fprintf(outputFile, "%d\n", min);
-
-        // Read the next element from the file that had the smallest element
-        if (fscanf(tempFilesPointers[minIndex], "%d", &buffer[minIndex]) == EOF) {
+        if (fscanf(tempFiles[minIndex], "%d", &buffer[minIndex]) == EOF) {
             buffer[minIndex] = INT_MAX;
         }
     }
 
     free(buffer);
-
-    // Close and remove the temporary files
-    for (i = 0; i < numFiles; i++) {
-        fclose(tempFiles[i]);
-        char tempFileName[20];
-        sprintf(tempFileName, "temp%d.txt", i);
-        remove(tempFileName);
-    }
 }
 
 // Compare function for qsort (can receive any data type)
