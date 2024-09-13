@@ -48,7 +48,7 @@ void writeSortedChunk(int *buffer, int count, int *tempFileCount);
 int compare(const void *a, const void *b);
 
 int main() {
-    FILE *inputFile = fopen("../inputs/input3.txt", "r");
+    FILE *inputFile = fopen("./inputs/input3.txt", "r");
 
     if (inputFile == NULL) {
         printf("Error! opening file");
@@ -65,7 +65,6 @@ int main() {
     start = clock();
 
     // Step 1: Read the file in chunks of CHUNK_SIZE
-    // Step 2: Sort the chunk and write it to a temporary file
     while (fscanf(inputFile, "%d", &buffer[count]) == 1) {
         count++;
         if (count == CHUNK_SIZE) {
@@ -104,43 +103,42 @@ int main() {
 
 // Step 4: For each pair of sorted files, merge them into a single file until only one file is left
 void mergeSortedFiles(FILE **tempFiles, int numFiles, FILE *outputFile) {
-    int i, *buffer = (int *)malloc(numFiles * sizeof(int));
-    FILE *tempFilesPointers[numFiles];
-    for (i = 0; i < numFiles; i++) {
-        tempFilesPointers[i] = tempFiles[i];
-    }
+    int *heap = (int *)malloc(numFiles * sizeof(int));
+    int *indices = (int *)malloc(numFiles * sizeof(int));
+    int i, minIndex, minValue;
 
-    // Read the first element from each file
     for (i = 0; i < numFiles; i++) {
-        if (fscanf(tempFilesPointers[i], "%d", &buffer[i]) == EOF) {
-            buffer[i] = INT_MAX;
+        if (fscanf(tempFiles[i], "%d", &heap[i]) != 1) {
+            heap[i] = INT_MAX;
         }
+        indices[i] = 0;
     }
 
     while (1) {
-        int min = buffer[0], minIndex = 0;
+        minIndex = -1;
+        minValue = INT_MAX;
+
         for (i = 0; i < numFiles; i++) {
-            if (buffer[i] < min) {
-                min = buffer[i];
+            if (heap[i] < minValue) {
+                minValue = heap[i];
                 minIndex = i;
             }
         }
 
-        // If all files are empty, we are done
-        if (min == INT_MAX) {
+        if (minValue == INT_MAX) {
             break;
         }
 
-        // Write the smallest element to the output file
-        fprintf(outputFile, "%d\n", min);
+        fprintf(outputFile, "%d\n", minValue);
 
-        // Read the next element from the file that had the smallest element
-        if (fscanf(tempFilesPointers[minIndex], "%d", &buffer[minIndex]) == EOF) {
-            buffer[minIndex] = INT_MAX;
+        if (fscanf(tempFiles[minIndex], "%d", &heap[minIndex]) != 1) {
+            heap[minIndex] = INT_MAX;
         }
     }
 
-    free(buffer);
+    // Free the allocated memory
+    free(heap);
+    free(indices);
 
     // Close and remove the temporary files
     for (i = 0; i < numFiles; i++) {

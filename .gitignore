@@ -1,3 +1,3 @@
 *.exe
-sorted_output.txt
+**/sorted_output.txt
 /output
