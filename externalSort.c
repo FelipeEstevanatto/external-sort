@@ -26,6 +26,7 @@ observados. Para este trabalho, considere M = 5.000.
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <time.h>
 
 #define CHUNK_SIZE 5000
 
@@ -44,6 +45,12 @@ int main() {
     int count = 0, tempFileCount = 0;
     char tempFileName[20];
     FILE *tempFile;
+
+
+    // Start timer of process
+    clock_t start, end;
+
+    start = clock();
 
     // Read the file in chunks of CHUNK_SIZE
     while (fscanf(inputFile, "%d", &buffer[count]) == 1) {
@@ -82,11 +89,14 @@ int main() {
     FILE *outputFile = fopen("sorted_output.txt", "w");
     mergeSortedFiles(tempFiles, tempFileCount, outputFile);
 
-    for (int i = 0; i < tempFileCount; i++) {
-        fclose(tempFiles[i]);
-    }
     free(tempFiles);
     fclose(outputFile);
+
+    end = clock();
+
+    // Calculate the time taken by merge sort
+    double time_taken = ((double)end - start) / CLOCKS_PER_SEC;
+    printf("Ms taken by merge sort: %f\n", time_taken);
 
     return 0;
 }
