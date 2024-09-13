@@ -36,7 +36,7 @@ void writeSortedChunk(int *buffer, int count, int *tempFileCount);
 int compare(const void *a, const void *b);
 
 int main() {
-    FILE *inputFile = fopen("../inputs/input3.txt", "r");
+    FILE *inputFile = fopen("./inputs/input4.txt", "r");
 
     if (inputFile == NULL) {
         printf("Error! opening file");
@@ -92,7 +92,7 @@ int main() {
 
     // Calculate the time taken by merge sort
     double time_taken = ((double)end - start) / CLOCKS_PER_SEC;
-    printf("Ms taken by merge sort: %f\n", time_taken);
+    printf("Seconds taken by merge sort: %f\n", time_taken);
 
     return 0;
 }
