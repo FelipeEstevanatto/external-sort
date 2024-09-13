@@ -4,6 +4,7 @@
  * input1.txt has 10.000 integers
  * input2.txt has 100.000 integers
  * input3.txt has 1.000.000 integers
+ * input4.txt has 10.000.000 integers
  * 
  * Considere o seguinte método de ordenação por intercalação externa (external merge sort) para
 ordenar N registros de um arquivo utilizando memória principal com capacidade para armazenar
@@ -30,8 +31,21 @@ observados. Para este trabalho, considere M = 5.000.
 
 #define CHUNK_SIZE 5000
 
+/**
+ * Number of chunks
+ * k = ceil(N / CHUNK_SIZE);
+ * 
+ * Every integer from the temp file is read and written once to the output
+ * Therefore, the total number of reads and writes is 2 * N
+ * 
+ * Total Read Operations: 2N
+ * Total Write Operations: 2N
+ * Total I/O Operations: 2N (read) + 2N (write) = 4N
+ */
+
 void mergeSortedFiles(FILE **tempFiles, int numFiles, FILE *outputFile);
-void quicksort(int *array, int left, int right);
+void writeSortedChunk(int *buffer, int count, int *tempFileCount);
+int compare(const void *a, const void *b);
 
 int main() {
     FILE *inputFile = fopen("../inputs/input1.txt", "r");
@@ -44,37 +58,23 @@ int main() {
     int *buffer = (int *)malloc(CHUNK_SIZE * sizeof(int));
     int count = 0, tempFileCount = 0;
     char tempFileName[20];
-    FILE *tempFile;
-
 
     // Start timer of process
     clock_t start, end;
 
     start = clock();
 
-    // Read the file in chunks of CHUNK_SIZE
+    // Step 1: Read the file in chunks of CHUNK_SIZE
     while (fscanf(inputFile, "%d", &buffer[count]) == 1) {
         count++;
         if (count == CHUNK_SIZE) {
-            quicksort(buffer, 0, count - 1);
-            sprintf(tempFileName, "temp%d.txt", tempFileCount++);
-            tempFile = fopen(tempFileName, "w");
-            for (int i = 0; i < count; i++) {
-                fprintf(tempFile, "%d\n", buffer[i]);
-            }
-            fclose(tempFile);
+            writeSortedChunk(buffer, count, &tempFileCount);
             count = 0;
         }
     }
 
     if (count > 0) {
-        quicksort(buffer, 0, count - 1);
-        sprintf(tempFileName, "temp%d.txt", tempFileCount++);
-        tempFile = fopen(tempFileName, "w");
-        for (int i = 0; i < count; i++) {
-            fprintf(tempFile, "%d\n", buffer[i]);
-        }
-        fclose(tempFile);
+        writeSortedChunk(buffer, count, &tempFileCount);
     }
 
     free(buffer);
@@ -148,27 +148,21 @@ void mergeSortedFiles(FILE **tempFiles, int numFiles, FILE *outputFile) {
     }
 }
 
-void quicksort(int *array, int left, int right) {
-    int i = left, j = right;
-    int tmp;
-    int pivot = array[(left + right) / 2];
+// Compare function for qsort (can receive any data type)
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
 
-    while (i <= j) {
-        while (array[i] < pivot)
-            i++;
-        while (array[j] > pivot)
-            j--;
-        if (i <= j) {
-            tmp = array[i];
-            array[i] = array[j];
-            array[j] = tmp;
-            i++;
-            j--;
-        }
+// Step 2: Write the sorted chunk to a temporary file
+void writeSortedChunk(int *buffer, int count, int *tempFileCount) {
+    char tempFileName[20];
+
+    // Sort the buffer
+    qsort(buffer, count, sizeof(int), compare);
+    snprintf(tempFileName, sizeof(tempFileName), "temp%d.txt", (*tempFileCount)++);
+    FILE *tempFile = fopen(tempFileName, "w");
+    for (int i = 0; i < count; i++) {
+        fprintf(tempFile, "%d\n", buffer[i]);
     }
-
-    if (left < j)
-        quicksort(array, left, j);
-    if (i < right)
-        quicksort(array, i, right);
+    fclose(tempFile);
 }
