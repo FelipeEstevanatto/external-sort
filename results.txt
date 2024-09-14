@@ -1,0 +1,97 @@
+T1
+Seconds taken by merge sort: 0,015000
+Seconds taken by merge sort: 0,016000
+Seconds taken by merge sort: 0,020000
+0,017
+
+T1 FAST
+Seconds taken by merge sort: 0,017000
+Seconds taken by merge sort: 0,014000
+Seconds taken by merge sort: 0,020000
+0,017
+
+T2 normal    
+Seconds taken by merge sort: 0,117000
+Seconds taken by merge sort: 0,127000
+Seconds taken by merge sort: 0,113000
+0,11566
+
+T2 FAST 
+Seconds taken by merge sort: 0,113000
+Seconds taken by merge sort: 0,111000
+Seconds taken by merge sort: 0,108000
+0,11066
+
+T3 normal  
+Seconds taken by merge sort: 1,208000
+Seconds taken by merge sort: 1,227000
+Seconds taken by merge sort: 1,669000
+1,368
+
+T3 FAST 
+Seconds taken by merge sort: 1,188000
+Seconds taken by merge sort: 1,277000
+Seconds taken by merge sort: 1,159000
+1,208
+
+T4 normal  
+Seconds taken by merge sort: 25,991000
+Seconds taken by merge sort: 25,619000
+Seconds taken by merge sort: 25,671000
+25,7603333
+
+T4 fast 
+Seconds taken by merge sort: 24,571000
+Seconds taken by merge sort: 24,789000
+Seconds taken by merge sort: 24,921000
+24,7603333
+
+========================== LINUX (WSL2)
+T1
+Seconds taken by merge sort: 0,003110
+Seconds taken by merge sort: 0,003246
+Seconds taken by merge sort: 0,002938
+0,003098
+
+T1 FAST2
+Seconds taken by merge sort: 0,0030902
+Seconds taken by merge sort: 0,0029442
+Seconds taken by merge sort: 0,002908
+0,0029808
+
+T2
+Seconds taken by merge sort: 0,031664
+Seconds taken by merge sort: 0,032719
+Seconds taken by merge sort: 0,032710
+0,03236433333333
+
+T2 FAST2
+Seconds taken by merge sort: 0,0297072
+Seconds taken by merge sort: 0,0302802
+Seconds taken by merge sort: 0,030387
+0,0301248
+
+
+T3
+Seconds taken by merge sort: 0,483476
+Seconds taken by merge sort: 0,470626
+Seconds taken by merge sort: 0,469429
+0,474510333333333333
+
+T3 FAST
+Seconds taken by merge sort: 0,3806002
+Seconds taken by merge sort: 0,3815202
+Seconds taken by merge sort: 0,370319
+0,3774798
+
+T4
+Seconds taken by merge sort: 20,617271
+Seconds taken by merge sort: 20,222371
+Seconds taken by merge sort: 20,299467
+20,379703
+
+T4 FAST2
+Seconds taken by merge sort: 11,8247612
+Seconds taken by merge sort: 11,9529722
+Seconds taken by merge sort: 11,806406
+11,8613798
