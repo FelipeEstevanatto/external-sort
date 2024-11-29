@@ -48,7 +48,7 @@ void writeSortedChunk(int *buffer, int count, int *tempFileCount);
 int compare(const void *a, const void *b);
 
 int main() {
-    FILE *inputFile = fopen("./inputs/input3.txt", "r");
+    FILE *inputFile = fopen("../inputs/input3.txt", "r");
 
     if (inputFile == NULL) {
         printf("Error! opening file");
